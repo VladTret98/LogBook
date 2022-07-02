@@ -22,11 +22,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String[] OPEN_PATHS = {"/auth/signup", "/auth/signin", "/updatepassword", "/admins/new", "/newpassword"};
+    private static final String[] OPEN_PATHS = {"/auth/signin", "/updatepassword", "/newpassword", "/admins/new"};
 
-    private static final String[] KEEPER_PATHS = {"/", "/cards/*", "/employees/*"};
+    private static final String[] KEEPER_PATHS = {"/keepers", "/cards/*", "/employees/*"};
 
-    private static final String[] ADMIN_PATHS = {"/companies/new", "/new"};
+    private static final String[] ADMIN_PATHS = {"/companies/*", "keepers/new"};
 
     private static final String[] USER_PATHS = {"/cards"};
 

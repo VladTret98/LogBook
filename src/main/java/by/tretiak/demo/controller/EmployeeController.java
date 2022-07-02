@@ -1,6 +1,7 @@
 package by.tretiak.demo.controller;
 
 import by.tretiak.demo.model.card.Card;
+import by.tretiak.demo.model.pojo.AddingCardRequest;
 import by.tretiak.demo.model.pojo.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -51,13 +52,8 @@ public class EmployeeController extends AbstractController{
 	}
 
 	@PostMapping(path = ADD_CARD_PATH)
-	public ResponseEntity<?> addNewCard(@RequestParam(name = EMPLOYEE_ID_PARAM) @Min(1) int employeeId,
-									 @Valid  @RequestBody Card card, BindingResult bindingResult) {
-		if (bindingResult.hasErrors()) {
-			List<ValidationError> errors = new ArrayList<>();
-			bindingResult.getFieldErrors().forEach(error -> errors.add(new ValidationError(error.getField(), error.getDefaultMessage())));
-		}
-		return this.service.addNewEmployeeCard(employeeId, card);
+	public ResponseEntity<?> addNewCard(@RequestBody AddingCardRequest request) {
+		return this.service.addNewEmployeeCard(request);
 	}
 
 	@PatchMapping(path = ID_PATH)

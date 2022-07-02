@@ -1,8 +1,11 @@
 package by.tretiak.demo.controller;
 
+import by.tretiak.demo.model.pojo.AddingCardRequest;
 import by.tretiak.demo.model.pojo.UserSignupRequest;
 import by.tretiak.demo.model.pojo.ValidationError;
 import by.tretiak.demo.service.AdminService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +31,16 @@ public class AdminController extends AbstractController{
     private AdminService service;
 
     @PostMapping(path = NEW_PATH)
-    public ResponseEntity addAdmin(@Valid @RequestBody UserSignupRequest signupRequest, BindingResult bindingResult) {
+    public ResponseEntity addAdmin(@Valid @RequestBody UserSignupRequest signupRequest, BindingResult bindingResult) throws JsonProcessingException {
+        AddingCardRequest addingCardRequest = new AddingCardRequest();
+        addingCardRequest.setStatus("PERSONAL");
+        addingCardRequest.setEmployeesId(new ArrayList<Integer>());
+        addingCardRequest.getEmployeesId().add(3);
+        addingCardRequest.setReady(false);
+        addingCardRequest.setIssuePoint("Lenina Street");
+        addingCardRequest.setValidDate(LocalDate.of(2025, 10, 10));
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println(mapper.writeValueAsString(addingCardRequest));
         if (bindingResult.hasErrors()) {
             List<ValidationError> errors = new ArrayList<>();
             bindingResult.getFieldErrors().forEach(error -> errors.add(new ValidationError(error.getField(), error.getDefaultMessage())));

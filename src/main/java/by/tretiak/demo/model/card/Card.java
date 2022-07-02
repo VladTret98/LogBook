@@ -9,9 +9,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,7 +39,7 @@ public class Card {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate validDate;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Employee> employees;
 
     @NotNull
@@ -46,6 +48,13 @@ public class Card {
     @NotNull
     @Enumerated(EnumType.STRING)
     private CardStatus status;
+
+    public Card(boolean isReady, LocalDate validDate, String issuePoint, String status) {
+        this.isReady = isReady;
+        this.validDate = validDate;
+        this.issuePoint = issuePoint;
+        this.status = CardStatus.valueOf(status);
+    }
 
     public enum CardStatus {
         PERSONAL("PERSONAL"),

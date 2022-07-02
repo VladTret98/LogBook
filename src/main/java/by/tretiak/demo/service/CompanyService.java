@@ -76,9 +76,15 @@ public class CompanyService {
         }
     }
 
+    @Transactional
     public ResponseEntity<?> setStatus(int id, boolean status) {
         try {
-            this.repository.setStatus(id, status);
+            Company company = this.repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(ExceptionMessageSource
+                    .getMessage(ExceptionMessageSource.COMPANY_NOT_FOUND)));
+            company.setIsEnable(status);
+            company.getKeepers().forEach(bookKeeper -> bookKeeper.setEnable(status));
+            company.getEmployees().forEach(employee -> employee.setEnable(status));
+            this.repository.save(company);
             return ResponseEntity.ok(MessageResponse.SUCCESS);
         } catch (ObjectNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
