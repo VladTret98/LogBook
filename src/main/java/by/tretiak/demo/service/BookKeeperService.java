@@ -40,7 +40,10 @@ public class BookKeeperService {
 
 	public ResponseEntity<?> setStatus(int userId, boolean status) {
 		try {
-			this.repository.setStatus(userId, status);
+			BookKeeper keeper = this.repository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(ExceptionMessageSource
+					.getMessage(ExceptionMessageSource.USER_NOT_FOUND)));
+			keeper.setEnable(status);
+			repository.save(keeper);
 			return ResponseEntity.ok(new MessageResponse(MessageResponse.SUCCESS));
 		} catch (ObjectNotFoundException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

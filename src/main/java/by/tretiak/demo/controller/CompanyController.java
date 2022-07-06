@@ -60,7 +60,7 @@ public class CompanyController extends AbstractController{
     }
 
     @PatchMapping(path = ID_PATH)
-    public ResponseEntity<?> setStatus(@RequestParam(ID_PARAM) int id, @RequestParam(name = STATUS_PARAM) boolean status) {
+    public ResponseEntity<?> setStatus(@PathVariable(ID_PARAM) int id, @RequestParam(name = STATUS_PARAM) boolean status) {
         return this.companyService.setStatus(id, status);
     }
 

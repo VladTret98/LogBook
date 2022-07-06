@@ -32,15 +32,6 @@ public class AdminController extends AbstractController{
 
     @PostMapping(path = NEW_PATH)
     public ResponseEntity addAdmin(@Valid @RequestBody UserSignupRequest signupRequest, BindingResult bindingResult) throws JsonProcessingException {
-        AddingCardRequest addingCardRequest = new AddingCardRequest();
-        addingCardRequest.setStatus("PERSONAL");
-        addingCardRequest.setEmployeesId(new ArrayList<Integer>());
-        addingCardRequest.getEmployeesId().add(3);
-        addingCardRequest.setReady(false);
-        addingCardRequest.setIssuePoint("Lenina Street");
-        addingCardRequest.setValidDate(LocalDate.of(2025, 10, 10));
-        ObjectMapper mapper = new ObjectMapper();
-        System.out.println(mapper.writeValueAsString(addingCardRequest));
         if (bindingResult.hasErrors()) {
             List<ValidationError> errors = new ArrayList<>();
             bindingResult.getFieldErrors().forEach(error -> errors.add(new ValidationError(error.getField(), error.getDefaultMessage())));

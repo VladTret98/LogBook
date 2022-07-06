@@ -91,7 +91,13 @@ public class AuthService {
 
     public User prepareNewUser(User user) throws ObjectNotFoundException {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            String reqRole = user.getRoles().stream().findFirst().get().getValue().getValue();
+            String reqRole;
+            try {
+                reqRole = user.getRoles().stream().findFirst().get().getValue().getValue();
+            } catch (NullPointerException e) {
+                throw new ObjectNotFoundException(ExceptionMessageSource.getMessage(ExceptionMessageSource.ROLE_NOT_FOUND));
+            }
+
 
             Set<Role> roles = new HashSet<>();
             setUserRoles(reqRole, roles);
@@ -114,11 +120,13 @@ public class AuthService {
                                     .getMessage(ExceptionMessageSource.ROLE_KEEPER_NOT_FOUND)));
                     roles.add(keeperRole);
                     break;
-                default:
+                case "ROLE_USER":
                     Role usRole = roleRepository.findByValue(ERole.ROLE_USER)
                             .orElseThrow(() -> new ObjectNotFoundException(ExceptionMessageSource
                                     .getMessage(ExceptionMessageSource.ROLE_USER_NOT_FOUND)));
                     roles.add(usRole);
+                    break;
+                default: throw new RuntimeException(ExceptionMessageSource.getMessage(ExceptionMessageSource.INCORRECT_ROLE));
             }
     }
 

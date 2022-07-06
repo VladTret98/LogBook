@@ -3,6 +3,7 @@ package by.tretiak.demo.model.user;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -17,6 +18,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Setter
 @Getter
+@ToString
 public class Role {
 
     @Id
