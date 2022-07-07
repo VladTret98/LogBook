@@ -1,8 +1,9 @@
 package by.tretiak.demo.controller;
 
-import by.tretiak.demo.model.card.Card;
+import by.tretiak.demo.exception.ObjectNotFoundException;
+import by.tretiak.demo.exception.ValidationException;
 import by.tretiak.demo.model.pojo.AddingCardRequest;
-import by.tretiak.demo.model.pojo.ValidationError;
+import by.tretiak.demo.model.pojo.MessageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -21,11 +22,7 @@ import lombok.Setter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/employees")
@@ -52,7 +49,8 @@ public class EmployeeController extends AbstractController{
 	}
 
 	@PostMapping(path = ADD_CARD_PATH)
-	public ResponseEntity<?> addNewCard(@RequestBody AddingCardRequest request) {
+	public MessageResponse addNewCard(@RequestBody AddingCardRequest request, BindingResult bindingResult) throws ValidationException, ObjectNotFoundException {
+		validate(bindingResult);
 		return this.service.addNewEmployeeCard(request);
 	}
 

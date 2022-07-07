@@ -1,5 +1,6 @@
 package by.tretiak.demo.service;
 
+import by.tretiak.demo.exception.NotInputException;
 import by.tretiak.demo.exception.ObjectNotFoundException;
 import by.tretiak.demo.exception.source.ExceptionMessageSource;
 import by.tretiak.demo.model.Company;
@@ -7,16 +8,14 @@ import by.tretiak.demo.model.pojo.MessageResponse;
 import by.tretiak.demo.model.user.BookKeeper;
 import by.tretiak.demo.model.user.Employee;
 import by.tretiak.demo.repository.CompanyRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @NoArgsConstructor
@@ -32,53 +31,45 @@ public class CompanyService {
     @Autowired
     private AuthService authService;
 
-    public ResponseEntity<?> addNewCompany(Company company) {
-            company = this.repository.save(company);
-            return ResponseEntity.ok(company);
+    public Company addNewCompany(Company company) {
+        company = this.repository.save(company);
+        return company;
     }
 
-    public ResponseEntity<?> getById(int id) {
+    public Company getById(int id) throws ObjectNotFoundException {
         try {
             Company requestedCompany = this.repository.findById(id).orElseThrow(()
                     -> new ObjectNotFoundException(ExceptionMessageSource.getMessage(ExceptionMessageSource.DATA_NOT_FOUND)));
-            return ResponseEntity.ok(requestedCompany);
+            return requestedCompany;
         } catch (ObjectNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            throw e;
         }
     }
 
     @Transactional
-    public ResponseEntity<?> addKeeper(BookKeeper keeper, int companyId) {
-        try{
+    public MessageResponse addKeeper(BookKeeper keeper, int companyId) throws NotInputException, ObjectNotFoundException {
             Company company = this.repository.findById(companyId).orElseThrow(()
                     -> new ObjectNotFoundException(ExceptionMessageSource.getMessage(ExceptionMessageSource.DATA_NOT_FOUND)));
             keeper.setCompany(company);
             keeper = (BookKeeper) this.authService.prepareNewUser(keeper);
             company.getKeepers().add(keeper);
             this.repository.save(company);
-            return ResponseEntity.ok(MessageResponse.USER_CREATED);
-        } catch (ObjectNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+            return new MessageResponse(MessageResponse.USER_CREATED);
     }
 
     @Transactional
-    public ResponseEntity<?> addEmployee(Employee employee, int companyId) {
-        try{
+    public MessageResponse addEmployee(Employee employee, int companyId) throws ObjectNotFoundException, NotInputException {
             Company company = this.repository.findById(companyId).orElseThrow(()
                     -> new ObjectNotFoundException(ExceptionMessageSource.getMessage(ExceptionMessageSource.DATA_NOT_FOUND)));
             employee.setCompany(company);
             employee = (Employee) this.authService.prepareNewUser(employee);
             company.getEmployees().add(employee);
             this.repository.save(company);
-            return ResponseEntity.ok(MessageResponse.USER_CREATED);
-        } catch (ObjectNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+            return new MessageResponse(MessageResponse.USER_CREATED);
     }
 
     @Transactional
-    public ResponseEntity<?> setStatus(int id, boolean status) {
+    public MessageResponse setStatus(int id, boolean status) {
         try {
             Company company = this.repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(ExceptionMessageSource
                     .getMessage(ExceptionMessageSource.COMPANY_NOT_FOUND)));
@@ -86,18 +77,14 @@ public class CompanyService {
             company.getKeepers().forEach(bookKeeper -> bookKeeper.setEnable(status));
             company.getEmployees().forEach(employee -> employee.setEnable(status));
             this.repository.save(company);
-            return ResponseEntity.ok(MessageResponse.SUCCESS);
+            return new MessageResponse(MessageResponse.SUCCESS);
         } catch (ObjectNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new MessageResponse(e.getMessage());
         }
     }
 
-    public String findAll() {
-        try {
-            return this.mapper.writeValueAsString(this.repository.findAll());
-        } catch (JsonProcessingException e) {
-            return ExceptionMessageSource.getMessage(ExceptionMessageSource.SERVER_ERROR);
-        }
+    public List<Company> findAll() {
+            return this.repository.findAll();
     }
 
 }

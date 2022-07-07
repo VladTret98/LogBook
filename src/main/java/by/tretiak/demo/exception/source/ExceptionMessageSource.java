@@ -30,6 +30,8 @@ public class ExceptionMessageSource {
     public static final String ROLE_USER_NOT_FOUND = "error.role.user.not.found";
     public static final String INCORRECT_ROLE = "error.this.role.not found";
     public static final String ROLE_NOT_FOUND = "error.role.not.found";
+    public static final String USERNAME_USED = "error.user.name.used";
+    public static final String NOT_ENABLE = "error.have.not.access.now";
 
     public static final String COMPANY_NOT_FOUND = "warning.company.not.found";
 

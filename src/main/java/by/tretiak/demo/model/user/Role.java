@@ -33,11 +33,11 @@ public class Role {
     }
 
     public Role(String role) {
-        if (role.equalsIgnoreCase("ROLE_ADMIN")) {
+        if (role.equals("ROLE_ADMIN")) {
             this.value = ERole.ROLE_ADMIN;
-        } else if (role.equalsIgnoreCase("ROLE_USER")) {
+        } else if (role.equals("ROLE_USER")) {
             this.value = ERole.ROLE_USER;
-        } else if (role.equalsIgnoreCase("ROLE_KEEPER")) {
+        } else if (role.equals("ROLE_KEEPER")) {
             this.value = ERole.ROLE_KEEPER;
         }
     }

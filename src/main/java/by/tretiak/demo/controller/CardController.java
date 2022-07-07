@@ -1,6 +1,9 @@
 package by.tretiak.demo.controller;
 
 
+import by.tretiak.demo.exception.ObjectNotFoundException;
+import by.tretiak.demo.model.card.Card;
+import by.tretiak.demo.model.pojo.MessageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/cards")
@@ -29,7 +33,7 @@ public class CardController extends AbstractController{
 	private static final String ADD_CARD_PATH =  "/employees/addcard";
 
 	@GetMapping
-	public String getCards() {
+	public List<Card> getCards() {
 		return this.service.getCards();
 	}
 
@@ -43,10 +47,9 @@ public class CardController extends AbstractController{
 	}
 
 	@PostMapping
-	public String addEmployee(@RequestParam int cardId,
-							  @RequestParam int employeeId) {
-		//WRITE!!!
-		return null;
+	public MessageResponse addEmployee(@RequestParam int cardId,
+									   @RequestParam int employeeId) throws ObjectNotFoundException {
+		return this.service.addEmployeeToCard(cardId, employeeId);
 	}
 
 }

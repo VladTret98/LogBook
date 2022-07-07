@@ -1,15 +1,15 @@
 package by.tretiak.demo.controller;
 
-import by.tretiak.demo.model.pojo.AddingCardRequest;
+import by.tretiak.demo.exception.NotInputException;
+import by.tretiak.demo.exception.ObjectNotFoundException;
+import by.tretiak.demo.exception.ValidationException;
 import by.tretiak.demo.model.pojo.UserSignupRequest;
-import by.tretiak.demo.model.pojo.ValidationError;
+import by.tretiak.demo.model.pojo.ValidationErrorPojo;
+import by.tretiak.demo.model.user.Admin;
 import by.tretiak.demo.service.AdminService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/admins")
@@ -31,12 +28,9 @@ public class AdminController extends AbstractController{
     private AdminService service;
 
     @PostMapping(path = NEW_PATH)
-    public ResponseEntity addAdmin(@Valid @RequestBody UserSignupRequest signupRequest, BindingResult bindingResult) throws JsonProcessingException {
-        if (bindingResult.hasErrors()) {
-            List<ValidationError> errors = new ArrayList<>();
-            bindingResult.getFieldErrors().forEach(error -> errors.add(new ValidationError(error.getField(), error.getDefaultMessage())));
-            return ResponseEntity.badRequest().body(errors);
-        }
+    public Admin addAdmin(@Valid @RequestBody UserSignupRequest signupRequest, BindingResult bindingResult)
+            throws NotInputException, ObjectNotFoundException, ValidationException {
+        validate(bindingResult);
         return this.service.addAdmin(signupRequest);
     }
 

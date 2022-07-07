@@ -4,9 +4,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import by.tretiak.demo.exception.ObjectNotFoundException;
 import by.tretiak.demo.exception.source.ExceptionMessageSource;
+import by.tretiak.demo.model.user.BookKeeper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import lombok.Setter;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/keepers")
@@ -33,12 +35,12 @@ public class BookKeeperController extends AbstractController{
 	private static final String NEW_KEEPER_PATH = "/companies/newkeeper";
 
 	@GetMapping()
-	public String getKeepers() {
+	public List<BookKeeper> getKeepers() {
 		return this.service.getAll();
 	}
 
 	@GetMapping(value = ID_PATH)
-	public String getKeeperById(@PathVariable(name = ID_PARAM) int id) {
+	public BookKeeper getKeeperById(@PathVariable(name = ID_PARAM) int id) throws ObjectNotFoundException {
 		return this.service.getById(id);
 	}
 
@@ -53,7 +55,8 @@ public class BookKeeperController extends AbstractController{
 	}
 
 	@PatchMapping(value = ID_PATH)
-	public ResponseEntity<?> changeStatus(@PathVariable(name = ID_PARAM) int id, @RequestParam(name = STATUS_PARAM) boolean status) {
+	public BookKeeper changeStatus(@PathVariable(name = ID_PARAM) int id, @RequestParam(name = STATUS_PARAM) boolean status)
+			throws ObjectNotFoundException {
 		return this.service.setStatus(id, status);
 	}
 

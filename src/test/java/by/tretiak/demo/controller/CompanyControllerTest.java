@@ -1,5 +1,6 @@
 package by.tretiak.demo.controller;
 
+import by.tretiak.demo.exception.ObjectNotFoundException;
 import by.tretiak.demo.model.Company;
 import by.tretiak.demo.service.CompanyService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,22 +30,22 @@ public class CompanyControllerTest {
 
 
     @Before
-    public void saveCompany() {
+    public void saveCompany() throws ObjectNotFoundException {
         Company company = new Company();
         company.setId(1);
         company.setName(COMPANY_NAME);
         company.setIsEnable(true);
-        Mockito.doReturn(ResponseEntity.ok(company)).when(this.companyService).getById(company.getId());
+        Mockito.doReturn(company).when(this.companyService).getById(company.getId());
     }
 
     @Test
-    public void getCompanyByIdTest() {
+    public void getCompanyByIdTest() throws ObjectNotFoundException {
         Company company = new Company();
         company.setId(1);
         company.setName(COMPANY_NAME);
         company.setIsEnable(true);
-        ResponseEntity resultEntity = this.companyController.getCompanyById(company.getId());
-        Assert.assertEquals(company, resultEntity.getBody());
+        Company requestedCompany = this.companyController.getCompanyById(company.getId());
+        Assert.assertEquals(company, requestedCompany);
     }
 
 }

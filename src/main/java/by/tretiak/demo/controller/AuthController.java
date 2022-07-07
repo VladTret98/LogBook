@@ -1,10 +1,11 @@
 package by.tretiak.demo.controller;
 
+import by.tretiak.demo.exception.ValidationException;
 import by.tretiak.demo.model.pojo.LoginRequest;
-import by.tretiak.demo.model.pojo.ValidationError;
+import by.tretiak.demo.model.pojo.MessageResponse;
+import by.tretiak.demo.model.pojo.ValidationErrorPojo;
 import by.tretiak.demo.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,21 +27,15 @@ public class AuthController extends AbstractController{
     AuthService authService;
 
     @PostMapping(SIGN_IN_PATH)
-    public ResponseEntity authUser(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<ValidationError> errors = new ArrayList<>();
-            bindingResult.getFieldErrors().forEach(error -> errors.add(new ValidationError(error.getField(), error.getDefaultMessage())));
-        }
+    public MessageResponse authUser(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult) throws ValidationException {
+        validate(bindingResult);
         return this.authService.authUser(loginRequest.getUsername(), loginRequest.getPassword());
     }
 
     @PostMapping(UPDATE_PASSWORD_PATH)
-    public ResponseEntity updatePassword(@RequestBody String password, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<ValidationError> errors = new ArrayList<>();
-            bindingResult.getFieldErrors().forEach(error -> errors.add(new ValidationError(error.getField(), error.getDefaultMessage())));
-        }
-            return this.authService.updatePassword(password);
+    public MessageResponse updatePassword(@RequestBody String password, BindingResult bindingResult) throws ValidationException {
+        validate(bindingResult);
+        return this.authService.updatePassword(password);
     }
 
 }

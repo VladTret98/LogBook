@@ -35,11 +35,11 @@ public class Company {
     @NotNull
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany
     @Cascade(CascadeType.ALL)
     private List<Employee> employees;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany
     @Cascade(CascadeType.ALL)
     private List<BookKeeper> keepers;
 

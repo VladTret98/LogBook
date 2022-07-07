@@ -29,37 +29,32 @@ public class EmployeeService {
 	@Autowired
 	private EmployeeRepository repository;
 
-
-	public ResponseEntity<?> addNewEmployeeCard(AddingCardRequest request) {
+	public MessageResponse addNewEmployeeCard(AddingCardRequest request) throws ObjectNotFoundException {
 		Card card = new Card(request.isReady(), request.getValidDate(), request.getIssuePoint(), request.getStatus());
-		try {
 			if (card.getStatus().equals(Card.CardStatus.CORPORATE)) {
 				return addCorporateCard(card, request.getEmployeesId());
 			} else if (card.getStatus().equals(Card.CardStatus.PERSONAL) && request.getEmployeesId().size() > 1) {
-				return ResponseEntity.badRequest().body(new MessageResponse(ExceptionMessageSource
-						.getMessage(ExceptionMessageSource.BAD_REQUEST)));
+				throw new RuntimeException(ExceptionMessageSource
+						.getMessage(ExceptionMessageSource.BAD_REQUEST));
 			}
 			else {
 				return addPersonalCard(card, request.getEmployeesId().get(0));
 			}
-		} catch (ObjectNotFoundException e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-		}
 	}
 
 	@Transactional
-	ResponseEntity<Card> addPersonalCard(Card card, Integer employeeId) throws ObjectNotFoundException {
+	MessageResponse addPersonalCard(Card card, Integer employeeId) throws ObjectNotFoundException {
 		Employee employee = this.repository.findById(employeeId).orElseThrow(() ->
 				new ObjectNotFoundException(ExceptionMessageSource
 						.getMessage(ExceptionMessageSource.USER_NOT_FOUND)));
 		card.setEmployees(new ArrayList<>(1));
 		card.getEmployees().add(employee);
 		employee.setPersonalCard(card);
-		return ResponseEntity.ok(this.repository.save(employee).getPersonalCard());
+		return new MessageResponse(MessageResponse.SUCCESS);
 	}
 
 	@Transactional
-	ResponseEntity<Card> addCorporateCard(Card card, List<Integer> employeesId) throws ObjectNotFoundException {
+	MessageResponse addCorporateCard(Card card, List<Integer> employeesId) throws ObjectNotFoundException {
 		for (Integer id: employeesId) {
 			Employee employee = this.repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(ExceptionMessageSource
 					.getMessage(ExceptionMessageSource.USER_NOT_FOUND)));
@@ -68,7 +63,7 @@ public class EmployeeService {
 			employee.getOtherCards().add(card);
 			employee = this.repository.save(employee);
 		}
-		return ResponseEntity.ok(card);
+		return new MessageResponse(MessageResponse.SUCCESS);
 	}
 
 	@Transactional

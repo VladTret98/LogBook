@@ -1,14 +1,17 @@
 package by.tretiak.demo.controller;
 
+import by.tretiak.demo.exception.NotInputException;
+import by.tretiak.demo.exception.ObjectNotFoundException;
+import by.tretiak.demo.exception.ValidationException;
 import by.tretiak.demo.model.Company;
-import by.tretiak.demo.model.pojo.ValidationError;
+import by.tretiak.demo.model.pojo.MessageResponse;
+import by.tretiak.demo.model.pojo.ValidationErrorPojo;
 import by.tretiak.demo.model.user.BookKeeper;
 import by.tretiak.demo.model.user.Employee;
 import by.tretiak.demo.service.CompanyService;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,47 +44,40 @@ public class CompanyController extends AbstractController{
     private static final String COMPANY_ID_PARAM = "companyId";
 
     @GetMapping
-    public String getCompanies() {
+    public List<Company> getCompanies() {
         return this.companyService.findAll();
     }
 
     @GetMapping(path = ID_PATH)
-    public ResponseEntity<?> getCompanyById(@PathVariable(ID_PARAM) int id) {
+    public Company getCompanyById(@PathVariable(ID_PARAM) int id) throws ObjectNotFoundException {
         return this.companyService.getById(id);
     }
 
     @PostMapping(path = NEW_PATH)
-    public ResponseEntity<?> addCompany(@Valid @RequestBody Company company, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<ValidationError> errors = new ArrayList<>();
-            bindingResult.getFieldErrors().forEach(error -> errors.add(new ValidationError(error.getField(), error.getDefaultMessage())));
-        }
-            return this.companyService.addNewCompany(company);
+    public Company addCompany(@Valid @RequestBody Company company, BindingResult bindingResult) throws ValidationException {
+        validate(bindingResult);
+        return this.companyService.addNewCompany(company);
     }
 
     @PatchMapping(path = ID_PATH)
-    public ResponseEntity<?> setStatus(@PathVariable(ID_PARAM) int id, @RequestParam(name = STATUS_PARAM) boolean status) {
+    public MessageResponse setStatus(@PathVariable(ID_PARAM) int id, @RequestParam(name = STATUS_PARAM) boolean status) {
         return this.companyService.setStatus(id, status);
     }
 
     @PostMapping(NEW_EMPLOYEE_PATH)
-    public ResponseEntity<?> addEmployee(@Valid @RequestBody Employee employee,
-                              @RequestParam(name = COMPANY_ID_PARAM) @Min(1) int companyId, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<ValidationError> errors = new ArrayList<>();
-            bindingResult.getFieldErrors().forEach(error -> errors.add(new ValidationError(error.getField(), error.getDefaultMessage())));
-        }
+    public MessageResponse addEmployee(@Valid @RequestBody Employee employee,
+                                       @RequestParam(name = COMPANY_ID_PARAM) @Min(1) int companyId, BindingResult bindingResult)
+            throws ObjectNotFoundException, NotInputException, ValidationException {
+        validate(bindingResult);
         return this.companyService.addEmployee(employee, companyId);
     }
 
     @PostMapping(path = NEW_KEEPER_PATH)
-    public ResponseEntity<?> addKeeper(@RequestBody BookKeeper bookKeeper,
-                                    @RequestParam(name = COMPANY_ID_PARAM) @Min(1) int companyId, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<ValidationError> errors = new ArrayList<>();
-            bindingResult.getFieldErrors().forEach(error -> errors.add(new ValidationError(error.getField(), error.getDefaultMessage())));
-        }
-            return this.companyService.addKeeper(bookKeeper, companyId);
+    public MessageResponse addKeeper(@RequestBody BookKeeper bookKeeper,
+                                    @RequestParam(name = COMPANY_ID_PARAM) @Min(1) int companyId, BindingResult bindingResult)
+            throws NotInputException, ObjectNotFoundException, ValidationException {
+        validate(bindingResult);
+        return this.companyService.addKeeper(bookKeeper, companyId);
     }
 
 

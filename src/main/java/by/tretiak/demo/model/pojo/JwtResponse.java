@@ -9,7 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
-public class JwtResponse {
+public class JwtResponse extends MessageResponse{
 
     private String token;
 
