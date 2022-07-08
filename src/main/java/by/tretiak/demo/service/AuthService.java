@@ -25,9 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.security.AccessControlException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,38 +84,31 @@ public class AuthService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             ERole reqRole;
             try {
-                reqRole = user.getRoles().stream().findFirst().get().getValue();
+                reqRole = user.getRole().getValue();
             } catch (NullPointerException e) {
                 throw new NotInputException(ExceptionMessageSource.getMessage(ExceptionMessageSource.ROLE_NOT_FOUND));
             }
 
-            Set<Role> roles = new HashSet<>();
-            setUserRoles(reqRole, roles);
+            Role role = setUserRoles(reqRole);
 
-            user.setRoles(roles);
+            user.setRole(role);
             return user;
     }
 
-    private void setUserRoles(ERole reqRole, Set<Role> roles) throws ObjectNotFoundException, NotInputException {
+    private Role setUserRoles(ERole reqRole) throws ObjectNotFoundException, NotInputException {
             switch (reqRole) {
                 case ROLE_ADMIN:
-                    Role adminRole = roleRepository.findByValue(ERole.ROLE_ADMIN)
+                    return roleRepository.findByValue(ERole.ROLE_ADMIN)
                             .orElseThrow(() -> new ObjectNotFoundException(ExceptionMessageSource
                                     .getMessage(ExceptionMessageSource.ROLE_ADMIN_NOT_FOUND)));
-                    roles.add(adminRole);
-                    break;
                 case ROLE_KEEPER:
-                    Role keeperRole = roleRepository.findByValue(ERole.ROLE_KEEPER)
+                    return roleRepository.findByValue(ERole.ROLE_KEEPER)
                             .orElseThrow(() -> new ObjectNotFoundException(ExceptionMessageSource
                                     .getMessage(ExceptionMessageSource.ROLE_KEEPER_NOT_FOUND)));
-                    roles.add(keeperRole);
-                    break;
                 case ROLE_USER:
-                    Role usRole = roleRepository.findByValue(ERole.ROLE_USER)
+                    return roleRepository.findByValue(ERole.ROLE_USER)
                             .orElseThrow(() -> new ObjectNotFoundException(ExceptionMessageSource
                                     .getMessage(ExceptionMessageSource.ROLE_USER_NOT_FOUND)));
-                    roles.add(usRole);
-                    break;
                 default: throw new NotInputException(ExceptionMessageSource.getMessage(ExceptionMessageSource.INCORRECT_ROLE));
             }
     }

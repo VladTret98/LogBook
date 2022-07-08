@@ -37,12 +37,6 @@ public class CompanyController extends AbstractController{
     @Autowired
     private CompanyService companyService;
 
-    private static final String NEW_EMPLOYEE_PATH = "/newemployee";
-
-    private static final String NEW_KEEPER_PATH = "/newkeeper";
-
-    private static final String COMPANY_ID_PARAM = "companyId";
-
     @GetMapping
     public List<Company> getCompanies() {
         return this.companyService.findAll();
@@ -63,24 +57,5 @@ public class CompanyController extends AbstractController{
     public MessageResponse setStatus(@PathVariable(ID_PARAM) int id, @RequestParam(name = STATUS_PARAM) boolean status) {
         return this.companyService.setStatus(id, status);
     }
-
-    @PostMapping(NEW_EMPLOYEE_PATH)
-    public MessageResponse addEmployee(@Valid @RequestBody Employee employee,
-                                       @RequestParam(name = COMPANY_ID_PARAM) @Min(1) int companyId, BindingResult bindingResult)
-            throws ObjectNotFoundException, NotInputException, ValidationException {
-        validate(bindingResult);
-        return this.companyService.addEmployee(employee, companyId);
-    }
-
-    @PostMapping(path = NEW_KEEPER_PATH)
-    public MessageResponse addKeeper(@RequestBody BookKeeper bookKeeper,
-                                    @RequestParam(name = COMPANY_ID_PARAM) @Min(1) int companyId, BindingResult bindingResult)
-            throws NotInputException, ObjectNotFoundException, ValidationException {
-        validate(bindingResult);
-        return this.companyService.addKeeper(bookKeeper, companyId);
-    }
-
-
-
 
 }

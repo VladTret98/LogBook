@@ -1,15 +1,15 @@
 package by.tretiak.demo.service;
 
+import by.tretiak.demo.exception.NotInputException;
 import by.tretiak.demo.exception.ObjectNotFoundException;
 import by.tretiak.demo.exception.source.ExceptionMessageSource;
 import by.tretiak.demo.model.card.Card;
 import by.tretiak.demo.model.pojo.AddingCardRequest;
 import by.tretiak.demo.model.pojo.MessageResponse;
 import by.tretiak.demo.model.user.Employee;
+import by.tretiak.demo.repository.CompanyWorkersRepository;
 import by.tretiak.demo.service.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,12 @@ public class EmployeeService {
 
 	@Autowired
 	private EmployeeRepository repository;
+
+	@Autowired
+	private CompanyWorkersRepository companyWorkersRepository;
+
+	@Autowired
+	private AuthService authService;
 
 	public MessageResponse addNewEmployeeCard(AddingCardRequest request) throws ObjectNotFoundException {
 		Card card = new Card(request.isReady(), request.getValidDate(), request.getIssuePoint(), request.getStatus());
@@ -61,27 +68,30 @@ public class EmployeeService {
 			card.setEmployees(new ArrayList<>());
 			card.getEmployees().add(employee);
 			employee.getOtherCards().add(card);
-			employee = this.repository.save(employee);
+			this.repository.save(employee);
 		}
 		return new MessageResponse(MessageResponse.SUCCESS);
 	}
 
-	@Transactional
-	public ResponseEntity<?> updateStatus(int userId, boolean isEnable) {
-		UserDetailsImpl bossUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	public MessageResponse addEmployee(Employee employee, int companyId) throws NotInputException, ObjectNotFoundException {
+		employee = (Employee) this.authService.prepareNewUser(employee);
+		this.companyWorkersRepository.addEmployee(employee, companyId);
+		return new MessageResponse(MessageResponse.USER_CREATED);
+	}
 
-		try {
+	@Transactional
+	public MessageResponse updateStatus(int userId, boolean isEnable) throws ObjectNotFoundException {
+		UserDetailsImpl bossUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			Employee employee = this.repository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(ExceptionMessageSource
 					.getMessage(ExceptionMessageSource.USER_NOT_FOUND)));
 			if (bossUserDetails.getCompanyId().equals(employee.getCompany().getId())) {
 				employee.setEnable(isEnable);
+				this.repository.save(employee);
 			} else {
-				return new ResponseEntity<>(ExceptionMessageSource.getMessage(ExceptionMessageSource.NOT_ACCESS), HttpStatus.FORBIDDEN);
+				throw new AccessControlException(ExceptionMessageSource
+						.getMessage(ExceptionMessageSource.NOT_ACCESS));
 			}
-		} catch (ObjectNotFoundException e) {
-			return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.NOT_FOUND);
-		}
-		return ResponseEntity.ok(MessageResponse.SUCCESS);
+		return new MessageResponse(MessageResponse.SUCCESS);
 	}
 
 }

@@ -1,13 +1,10 @@
 package by.tretiak.demo.model.user;
 
 import by.tretiak.demo.model.Company;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -23,14 +20,13 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Setter
 @Getter
-@ToString
 @Entity
 @Table(name = "keepers")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookKeeper extends User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "is_enable", nullable = false)
@@ -39,7 +35,6 @@ public class BookKeeper extends User {
     @ManyToOne
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     @Cascade(CascadeType.PERSIST)
-    @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
     private Company company;
 
     public BookKeeper(String username, String password) {

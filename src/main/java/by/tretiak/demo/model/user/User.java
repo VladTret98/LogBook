@@ -9,8 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
@@ -20,9 +19,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @NoArgsConstructor
 @Setter
@@ -44,11 +40,9 @@ public class User {
 	@NotNull
 	private String password;
 
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinTable(name = "user_roles",
-				joinColumns = @JoinColumn(name = "user_id"),
-				inverseJoinColumns = @JoinColumn(referencedColumnName = "id"))
-	protected Set<Role> roles = new HashSet<>();
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "id")
+	private Role role;
 
 	public User(String username, String password) {
 		this.username = username;

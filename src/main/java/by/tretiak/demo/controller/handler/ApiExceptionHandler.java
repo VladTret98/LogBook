@@ -1,4 +1,4 @@
-package by.tretiak.demo.controller.exceptionshandlers;
+package by.tretiak.demo.controller.handler;
 
 import by.tretiak.demo.exception.NotInputException;
 import by.tretiak.demo.exception.ObjectNotFoundException;
@@ -48,14 +48,14 @@ public class ApiExceptionHandler {
     @ExceptionHandler(value = NotInputException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public MessageResponse runtimeException(NotInputException exception) {
+    public MessageResponse notInputException(NotInputException exception) {
         return new MessageResponse(exception.getMessage());
     }
 
     @ExceptionHandler(value = AccessControlException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
-    public MessageResponse runtimeException(AccessControlException exception) {
+    public MessageResponse accessControlException(AccessControlException exception) {
         return new MessageResponse(exception.getMessage());
     }
 

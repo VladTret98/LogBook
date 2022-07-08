@@ -3,8 +3,6 @@ package by.tretiak.demo.controller;
 import by.tretiak.demo.exception.NotInputException;
 import by.tretiak.demo.exception.ObjectNotFoundException;
 import by.tretiak.demo.exception.ValidationException;
-import by.tretiak.demo.model.pojo.UserSignupRequest;
-import by.tretiak.demo.model.pojo.ValidationErrorPojo;
 import by.tretiak.demo.model.user.Admin;
 import by.tretiak.demo.service.AdminService;
 import lombok.NoArgsConstructor;
@@ -28,10 +26,10 @@ public class AdminController extends AbstractController{
     private AdminService service;
 
     @PostMapping(path = NEW_PATH)
-    public Admin addAdmin(@Valid @RequestBody UserSignupRequest signupRequest, BindingResult bindingResult)
+    public Admin addAdmin(@Valid @RequestBody Admin admin, BindingResult bindingResult)
             throws NotInputException, ObjectNotFoundException, ValidationException {
         validate(bindingResult);
-        return this.service.addAdmin(signupRequest);
+        return this.service.addAdmin(admin);
     }
 
 }

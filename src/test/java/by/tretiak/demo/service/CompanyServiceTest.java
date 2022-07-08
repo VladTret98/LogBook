@@ -38,9 +38,4 @@ public class CompanyServiceTest {
         Assert.assertTrue(wasCompanySaved);
     }
 
-
-
-
-
-
 }

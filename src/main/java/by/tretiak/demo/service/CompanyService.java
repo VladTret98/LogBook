@@ -5,10 +5,7 @@ import by.tretiak.demo.exception.ObjectNotFoundException;
 import by.tretiak.demo.exception.source.ExceptionMessageSource;
 import by.tretiak.demo.model.Company;
 import by.tretiak.demo.model.pojo.MessageResponse;
-import by.tretiak.demo.model.user.BookKeeper;
-import by.tretiak.demo.model.user.Employee;
 import by.tretiak.demo.repository.CompanyRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +23,6 @@ public class CompanyService {
     private CompanyRepository repository;
 
     @Autowired
-    private ObjectMapper mapper;
-
-    @Autowired
     private AuthService authService;
 
     public Company addNewCompany(Company company) {
@@ -44,28 +38,6 @@ public class CompanyService {
         } catch (ObjectNotFoundException e) {
             throw e;
         }
-    }
-
-    @Transactional
-    public MessageResponse addKeeper(BookKeeper keeper, int companyId) throws NotInputException, ObjectNotFoundException {
-            Company company = this.repository.findById(companyId).orElseThrow(()
-                    -> new ObjectNotFoundException(ExceptionMessageSource.getMessage(ExceptionMessageSource.DATA_NOT_FOUND)));
-            keeper.setCompany(company);
-            keeper = (BookKeeper) this.authService.prepareNewUser(keeper);
-            company.getKeepers().add(keeper);
-            this.repository.save(company);
-            return new MessageResponse(MessageResponse.USER_CREATED);
-    }
-
-    @Transactional
-    public MessageResponse addEmployee(Employee employee, int companyId) throws ObjectNotFoundException, NotInputException {
-            Company company = this.repository.findById(companyId).orElseThrow(()
-                    -> new ObjectNotFoundException(ExceptionMessageSource.getMessage(ExceptionMessageSource.DATA_NOT_FOUND)));
-            employee.setCompany(company);
-            employee = (Employee) this.authService.prepareNewUser(employee);
-            company.getEmployees().add(employee);
-            this.repository.save(company);
-            return new MessageResponse(MessageResponse.USER_CREATED);
     }
 
     @Transactional

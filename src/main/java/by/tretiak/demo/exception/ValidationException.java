@@ -4,7 +4,6 @@ import by.tretiak.demo.model.pojo.ValidationErrorPojo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.validation.FieldError;
 
 import java.util.List;
 

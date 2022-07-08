@@ -40,8 +40,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(userName);
 
                 if (this.assistant.checkAuthorization(userDetails)) {
-
-
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);

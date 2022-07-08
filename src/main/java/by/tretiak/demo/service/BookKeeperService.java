@@ -2,8 +2,11 @@ package by.tretiak.demo.service;
 
 import java.util.List;
 
+import by.tretiak.demo.exception.NotInputException;
 import by.tretiak.demo.exception.ObjectNotFoundException;
 import by.tretiak.demo.exception.source.ExceptionMessageSource;
+import by.tretiak.demo.model.pojo.MessageResponse;
+import by.tretiak.demo.repository.CompanyWorkersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import by.tretiak.demo.model.user.BookKeeper;
@@ -19,6 +22,12 @@ public class BookKeeperService {
 
 	@Autowired
 	private BookKeeperRepository repository;
+
+	@Autowired
+	private CompanyWorkersRepository companyWorkersRepository;
+
+	@Autowired
+	private AuthService authService;
 
 	public List<BookKeeper> getAll() {
 			return this.repository.findAll();
@@ -44,4 +53,10 @@ public class BookKeeperService {
 				throw e;
 			}
 		}
+
+    public MessageResponse addKeeper(BookKeeper bookKeeper, int companyId) throws NotInputException, ObjectNotFoundException {
+		bookKeeper = (BookKeeper) this.authService.prepareNewUser(bookKeeper);
+		this.companyWorkersRepository.addKeeper(bookKeeper, companyId);
+		return new MessageResponse(MessageResponse.USER_CREATED);
+    }
 }

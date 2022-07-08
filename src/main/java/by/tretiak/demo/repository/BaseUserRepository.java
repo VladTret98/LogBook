@@ -41,20 +41,20 @@ public class BaseUserRepository {
     }
 
     public User save(User user) {
-        ERole role = user.getRoles().stream().findFirst().get().getValue();
+        ERole role = user.getRole().getValue();
         if (role.equals(ERole.ROLE_ADMIN)) {
             Admin admin = new Admin(user.getUsername(), user.getPassword());
-            admin.setRoles(user.getRoles());
+            admin.setRole(user.getRole());
             return this.adminRepository.save(admin);
         } else if (role.equals(ERole.ROLE_KEEPER)) {
             BookKeeper keeper = new BookKeeper(user.getUsername(), user.getPassword());
             keeper.setEnable(true);
-            keeper.setRoles(user.getRoles());
+            keeper.setRole(user.getRole());
             keeper.setCompany(((BookKeeper) user).getCompany());
             return this.bookKeeperRepository.save(keeper);
         } else {
             Employee employee = new Employee(user.getUsername(), user.getPassword());
-            employee.setRoles(user.getRoles());
+            employee.setRole(user.getRole());
             return this.employeeRepository.save(employee);
         }
     }
@@ -67,7 +67,7 @@ public class BaseUserRepository {
         } catch (RuntimeException e) {
             throw new UsernameNotFoundException(ExceptionMessageSource.getMessage(ExceptionMessageSource.USER_NOT_FOUND));
         }
-        Role userRole = user.getRoles().stream().findFirst().get();
+        Role userRole = user.getRole();
         if (userRole.getValue().equals(ERole.ROLE_ADMIN)) {
             return this.adminRepository.findById(user.getId()).get();
         } else if (userRole.getValue().equals(ERole.ROLE_KEEPER)) {
