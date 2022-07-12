@@ -41,7 +41,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler(value = RuntimeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public MessageResponse runtimeException(ObjectNotFoundException exception) {
+    public MessageResponse runtimeException(RuntimeException exception) {
         return new MessageResponse(exception.getMessage());
     }
 

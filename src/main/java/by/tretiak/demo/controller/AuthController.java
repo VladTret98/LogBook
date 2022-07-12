@@ -30,17 +30,6 @@ public class AuthController extends AbstractController{
 
     @PostMapping(SIGN_IN_PATH)
     public MessageResponse authUser(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult) throws ValidationException {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            Employee employee = new Employee();
-            employee.setUsername("employee");
-            employee.setPassword("employee");
-            employee.setEnable(true);
-            employee.setRole(new Role(ERole.ROLE_USER));
-            System.out.println(mapper.writeValueAsString(employee));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
         validate(bindingResult);
         return this.authService.authUser(loginRequest.getUsername(), loginRequest.getPassword());
     }
