@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-role
+      author: Vladislav
+      changes:
+        - createTable:
+          tableName: admins
+          columns:
+            - column:
+              name: id
+              type: integer
+              constraints:
+                primaryKey: true
+                nullable: false
+        - createTable:
+          tableName: keepers
+          columns:
+            - column:
+              name: id
+              type: integer
+              constraints:
+                primaryKey: true
+                nullable: false
+            - column:
+                name: is_enable
+                type: boolean
+                constraints:
+                  nullable: false
+            - column:
+                name: company_id
+                type: integer
+                constraints:
+                  nullable: false
+        - createTable:
+          tableName: employees
+          columns:
+            - column:
+              name: id
+              type: integer
+              constraints:
+                primaryKey: true
+                nullable: false
+            - column:
+                name: is_enable
+                type: boolean
+                constraints:
+                  nullable: false
+            - column:
+                name: company_id
+                type: integer
+                constraints:
+                  nullable: false
+            - column:
+                name: personal_card_id
+                type: integer
+                constraints:
+                  nullable: true
+        - addForeignKeyConstraint:
+            baseTableName: keepers
+            baseColumnNames: company_id
+            referencedTableName: companies
+            referencedColumnNames: id
+            constraintName: keeper-company-fk
+        - addForeignKeyConstraint:
+            baseTableName: employees
+            baseColumnNames: personal_card_id
+            referencedTableName: cards
+            referencedColumnNames: id
+            constraintName: user-cards-fk
+
+

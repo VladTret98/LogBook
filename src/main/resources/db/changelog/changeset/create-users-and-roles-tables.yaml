@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - changeSet:
+     id: create-users-and-roles-tables
+     author: Vladislav
+     changes:
+      - createTable:
+         tableName: users
+         columns:
+          - column:
+             name: id
+             type: Integer
+             autoIncrement: true
+             constraints:
+               primaryKey: true
+               nullable: false
+          - column:
+              name: username
+              type: varchar(15)
+              constraints:
+                unique: true
+                nullable: false
+          - column:
+              name: password
+              type: varchar(25)
+              constraints:
+                nullable: false
+      - createTable:
+          tableName: roles
+          columns:
+            - column:
+                name: id
+                type: Integer
+                autoIncrement: true
+                constraints:
+                  primaryKey: true
+                  nullable: false
+            - column:
+                name: value
+                type: varchar(200)
+                constraints:
+                  nullable: false
+      - createTable:
+          tableName: user_roles
+          columns:
+            - column:
+                name: user_id
+                type: integer
+            - column:
+                name: roles_id
+                type: integer
+      - addForeignKeyConstraint:
+          baseTableName: user_roles
+          baseColumnNames: user_id
+          referencedTableName: users
+          referencedColumnNames: id
+          constraintName: user_id_fk
+      - addForeignKeyConstraint:
+          baseTableName: user_roles
+          baseColumnNames: roles_id
+          referencedTableName: roles
+          referencedColumnNames: id
+          constraintName: roles_id_fk

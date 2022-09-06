@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_company
+      author: Vladislav
+      changes:
+        - createTable:
+            tableName: companies
+            columns:
+             - column:
+               name: id
+               type: integer
+               constraints:
+                 primaryKey: true
+                 nullable: false
+             - column:
+               name: name
+               type: varchar(200)
+               constraints:
+                 nullable: false
+             - column:
+               name: is_enable
+               type: boolean
+               constraints:
+                 nullable: false
