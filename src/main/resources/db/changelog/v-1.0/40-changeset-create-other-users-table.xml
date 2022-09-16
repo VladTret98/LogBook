@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="Vladislav">
+        <createTable tableName="admins">
+            <column name="id" type="integer">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="employees">
+            <column name="id" type="integer">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="is_enable" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="personal_card_id" type="integer"/>
+        </createTable>
+
+        <createTable tableName="keepers">
+            <column name="id" type="integer">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="is_enable" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="companies_employees">
+            <column name="companies_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="employees_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="companies_keepers">
+            <column name="companies_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="keepers_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="employees_other_cards">
+            <column name="employees_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="other_cards_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="card_employees">
+            <column name="employees_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="card_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="admins" baseColumnNames="id"
+                                 constraintName="admin_user_fk" referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="keepers" baseColumnNames="company_id"
+                                 constraintName="keeper_company_fk" referencedTableName="companies"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="keepers" baseColumnNames="id"
+                                 constraintName="keepers_users_fk" referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="companies_employees" baseColumnNames="employees_id"
+                                 constraintName="empl_id_fk" referencedTableName="employees"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="companies_employees" baseColumnNames="companies_id"
+                                 constraintName="comp_id_fk" referencedTableName="companies"
+                                 referencedColumnNames="id"/>
+
+
+        <addForeignKeyConstraint baseTableName="companies_keepers" baseColumnNames="keepers_id"
+                                 constraintName="comp_keepers_fk" referencedTableName="keepers"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="companies_keepers" baseColumnNames="companies_id"
+                                 constraintName="comp_keepers_compId_fk" referencedTableName="companies"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="employees_other_cards" baseColumnNames="employees_id"
+                                 constraintName="empl_id_other_cards" referencedTableName="employees"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="employees_other_cards" baseColumnNames="other_cards_id"
+                                 constraintName="card_id_other_cards" referencedTableName="card"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="employees" baseColumnNames="company_id"
+                                 constraintName="employee_company_fk" referencedTableName="companies"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="employees" baseColumnNames="personal_card_id"
+                                 constraintName="person_card_empl_fk" referencedTableName="card"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="employees" baseColumnNames="id"
+                                 constraintName="empl_users_fk" referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+
+</databaseChangeLog>
