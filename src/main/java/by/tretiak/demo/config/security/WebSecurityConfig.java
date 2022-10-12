@@ -59,23 +59,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests()
-                .antMatchers(OPEN_PATHS).permitAll()
-                .antMatchers(USER_PATHS).hasRole(SecurityRoles.USER.value)
-                .antMatchers(KEEPER_PATHS).hasRole(SecurityRoles.KEEPER.value)
-                .antMatchers(ADMIN_PATHS).hasRole(SecurityRoles.ADMIN.value)
-                .and()
-                .logout()
-                .invalidateHttpSession(true)
-                .and()
-                .rememberMe()
-                .tokenValiditySeconds(3600);
-
-        http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+//        http
+//                .csrf().disable()
+//                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+//                .authorizeRequests()
+//                .antMatchers(OPEN_PATHS).permitAll()
+//                .antMatchers(USER_PATHS).hasRole(SecurityRoles.USER.value)
+//                .antMatchers(KEEPER_PATHS).hasRole(SecurityRoles.KEEPER.value)
+//                .antMatchers(ADMIN_PATHS).hasRole(SecurityRoles.ADMIN.value)
+//                .and()
+//                .logout()
+//                .invalidateHttpSession(true)
+//                .and()
+//                .rememberMe()
+//                .tokenValiditySeconds(3600);
+//
+//        http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     enum SecurityRoles {

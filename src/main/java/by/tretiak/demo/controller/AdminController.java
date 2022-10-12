@@ -5,6 +5,7 @@ import by.tretiak.demo.exception.ObjectNotFoundException;
 import by.tretiak.demo.exception.ValidationException;
 import by.tretiak.demo.model.user.Admin;
 import by.tretiak.demo.service.AdminService;
+import by.tretiak.demo.service.CardService;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequestMapping(path = "/admins")
@@ -27,11 +29,6 @@ public class AdminController extends AbstractController{
             throws NotInputException, ObjectNotFoundException, ValidationException {
         validate(bindingResult);
         return this.service.addAdmin(admin);
-    }
-
-    @GetMapping(path = "/qqq")
-    public String qqq() {
-        return "Заебись";
     }
 
 }

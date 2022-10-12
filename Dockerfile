@@ -1,6 +1,7 @@
-FROM tomcat:8-jdk11-openjdk
+FROM postgres:11
+FROM tomcat:9-jdk11
 
-COPY /target/LogBook-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/
+COPY target/BeerShop.war /usr/local/tomcat/webapps/
 
 CMD ["catalina.sh", "run"]
 
