@@ -35,6 +35,7 @@ public class CardController extends AbstractController{
 	private CardService service;
 
 	private static final String ADD_CARD_PATH =  "/employees/addcard";
+	private static final String BALANCE_PATH = "/balance";
 
 	@GetMapping
 	public List<FullCardInfoDto> getCards() throws JsonProcessingException {
@@ -55,7 +56,7 @@ public class CardController extends AbstractController{
 									   @RequestParam int employeeId) throws ObjectNotFoundException {
 		return this.service.addEmployeeToCard(cardId, employeeId);
 	}
-	@GetMapping("/balance")
+	@GetMapping(BALANCE_PATH)
 	public MessageResponse getCardBalance(@RequestParam int cardId, HttpServletResponse response)  {
 			return new MessageResponse(String.valueOf(this.service.getCardBalance(cardId)));
 	}

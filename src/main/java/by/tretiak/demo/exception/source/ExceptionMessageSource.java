@@ -23,7 +23,7 @@ public class ExceptionMessageSource {
     public static final String NOT_AUTHORIZED = "warning.message.not.authorized";
     public static final String NOT_ACCESS = "warning.message.access";
     public static final String USER_NOT_FOUND = "warning.message.user.not.found";
-    public static final String DATA_NOT_FOUND = "warning.message.data.not.fount";
+    public static final String DATA_NOT_FOUND = "warning.message.data.not.found";
 
     public static final String ROLE_ADMIN_NOT_FOUND = "error.role.admin.not.found";
     public static final String ROLE_KEEPER_NOT_FOUND = "error.role.keeper.not.found";

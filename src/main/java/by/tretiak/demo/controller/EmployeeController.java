@@ -8,13 +8,7 @@ import by.tretiak.demo.model.pojo.MessageResponse;
 import by.tretiak.demo.model.user.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import by.tretiak.demo.service.EmployeeService;
 import lombok.NoArgsConstructor;
@@ -38,21 +32,31 @@ public class EmployeeController extends AbstractController{
 
 	@PostMapping(path = NEW_PATH)
 	public MessageResponse addNewEmployee(@Valid @RequestBody Employee employee,
-										  @RequestParam(name = COMPANY_ID_PARAM) @Min(1) int companyId, BindingResult bindingResult)
+										  @RequestParam(name = COMPANY_ID_PARAM) @Min(1) int companyId,
+										  BindingResult bindingResult)
 			throws ObjectNotFoundException, NotInputException, ValidationException {
 		validate(bindingResult);
 		return this.service.addEmployee(employee, companyId);
 	}
 
 	@PostMapping(path = ADD_CARD_PATH)
-	public MessageResponse addNewCard(@RequestBody AddingCardRequest request, BindingResult bindingResult) throws ValidationException, ObjectNotFoundException {
+	public MessageResponse addNewCard(@RequestBody AddingCardRequest request,
+									  BindingResult bindingResult)
+			throws ValidationException, ObjectNotFoundException {
 		validate(bindingResult);
 		return this.service.addNewEmployeeCard(request);
 	}
 
 	@PatchMapping(path = ID_PATH)
-	public MessageResponse changePermission(@PathVariable(name = ID_PARAM) int id, @RequestParam(name = STATUS_PARAM) boolean isEnable) throws ObjectNotFoundException {
+	public MessageResponse changePermission(@PathVariable(name = ID_PARAM) int id,
+											@RequestParam(name = STATUS_PARAM) boolean isEnable)
+			throws ObjectNotFoundException {
 		return this.service.updateStatus(id, isEnable);
+	}
+
+	@GetMapping
+	public Employee getEmployeeById(Integer id) throws ObjectNotFoundException {
+		return this.service.getEmployeeById(id);
 	}
 
 }

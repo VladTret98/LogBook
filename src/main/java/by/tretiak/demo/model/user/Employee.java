@@ -47,6 +47,9 @@ public class Employee extends User {
 	@Column(name = "is_enable", nullable = false)
 	private boolean isEnable;
 
+	@Column(name = "total_balance", nullable = false)
+	private Double totalBalance = 0D;
+
 	public Employee( String username, String password) {
 		super(username, password);
 	}

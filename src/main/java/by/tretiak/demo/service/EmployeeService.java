@@ -37,7 +37,8 @@ public class EmployeeService {
 	private AuthService authService;
 
 	public MessageResponse addNewEmployeeCard(AddingCardRequest request) throws ObjectNotFoundException {
-		Card card = new Card(request.isReady(), request.getValidDate(), request.getIssuePoint(), request.getStatus());
+		Card card = new Card(request.isReady(), request.getValidDate(),
+				request.getIssuePoint(), request.getStatus());
 			if (card.getStatus().equals(Card.CardStatus.CORPORATE)) {
 				return addCorporateCard(card, request.getEmployeesId());
 			} else if (card.getStatus().equals(Card.CardStatus.PERSONAL) && request.getEmployeesId().size() > 1) {
@@ -63,7 +64,8 @@ public class EmployeeService {
 	@Transactional
 	MessageResponse addCorporateCard(Card card, List<Integer> employeesId) throws ObjectNotFoundException {
 		for (Integer id: employeesId) {
-			Employee employee = this.repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(ExceptionMessageSource
+			Employee employee = this.repository.findById(id).orElseThrow(() ->
+					new ObjectNotFoundException(ExceptionMessageSource
 					.getMessage(ExceptionMessageSource.USER_NOT_FOUND)));
 			card.setEmployees(new ArrayList<>());
 			card.getEmployees().add(employee);
@@ -73,7 +75,8 @@ public class EmployeeService {
 		return new MessageResponse(MessageResponse.SUCCESS);
 	}
 
-	public MessageResponse addEmployee(Employee employee, int companyId) throws NotInputException, ObjectNotFoundException {
+	public MessageResponse addEmployee(Employee employee, int companyId)
+			throws NotInputException, ObjectNotFoundException {
 		employee = (Employee) this.authService.prepareNewUser(employee);
 		this.companyWorkersRepository.addEmployee(employee, companyId);
 		return new MessageResponse(MessageResponse.USER_CREATED);
@@ -81,8 +84,10 @@ public class EmployeeService {
 
 	@Transactional
 	public MessageResponse updateStatus(int userId, boolean isEnable) throws ObjectNotFoundException {
-		UserDetailsImpl bossUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			Employee employee = this.repository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(ExceptionMessageSource
+		UserDetailsImpl bossUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal();
+			Employee employee = this.repository.findById(userId).orElseThrow(() ->
+					new ObjectNotFoundException(ExceptionMessageSource
 					.getMessage(ExceptionMessageSource.USER_NOT_FOUND)));
 			if (bossUserDetails.getCompanyId().equals(employee.getCompany().getId())) {
 				employee.setEnable(isEnable);
@@ -94,4 +99,9 @@ public class EmployeeService {
 		return new MessageResponse(MessageResponse.SUCCESS);
 	}
 
+	public Employee getEmployeeById(Integer id) throws ObjectNotFoundException {
+		return this.repository.findById(id).orElseThrow(() ->
+				new ObjectNotFoundException(ExceptionMessageSource
+						.getMessage(ExceptionMessageSource.USER_NOT_FOUND)));
+	}
 }
